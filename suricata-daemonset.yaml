@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: suricata
+  namespace: nsm
+  labels:
+    role: nids
+spec:
+  selector:
+    matchLabels:
+      name: suricata
+  template:
+    metadata:
+      labels:
+        name: suricata
+    spec:
+      containers:
+      - name: suricata
+        image: localhost:32000/suricata:0.1
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_NICE
+        volumeMounts:
+        - name: suricata-logs
+          mountPath: /var/log/suricata/  
+      nodeSelector:
+        type: net-sensor
+      hostNetwork: true
+      
+      volumes:
+      - name: suricata-logs
+        emptyDir: {}
