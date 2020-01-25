@@ -1,0 +1,2 @@
+# Empty config file
+# To be overwritten with any custom settings via a kubernetes config map

@@ -933,3 +933,4 @@ threading:
 luajit:
   states: 128
 
+include: k8s-configmap.yaml
