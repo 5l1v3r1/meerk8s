@@ -1,4 +1,5 @@
 %YAML 1.1
+---
 vars:
   # more specifc is better for alert accuracy and performance
   address-groups:
@@ -77,7 +78,7 @@ rule-files:
 
 classification-file: /etc/suricata/classification.config
 reference-config-file: /etc/suricata/reference.config
-
+threshold-file: /etc/suricata/threshold.config
 
 default-log-dir: /var/log/suricata/
 
@@ -119,22 +120,22 @@ outputs:
             force-hash: [md5,sha1]
         - smtp:
             extended: yes # enable this for extended logging information
+        - snmp
         - ssh
         - stats:
             totals: yes       # stats for all threads merged together
             threads: no       # per thread stats
             deltas: no        # include delta values
+        - anomaly
         - flow
         - dhcp    
         - smb
-        - imap
         - nfs
-        - dcerpc
         - krb5
         - ikev2
         - ftp
-        - ftp-data
         - tftp
+        - rdp
 
   # alert output for use with Barnyard2
   - unified2-alert:
@@ -809,15 +810,9 @@ host:
   prealloc: 1000
   memcap: 32mb
 
-# IP Pair table:
-#
-# Used by xbits 'ippair' tracking.
-#
-#ippair:
-#  hash-size: 4096
-#  prealloc: 1000
-#  memcap: 32mb
-
+af-packet:
+  - default:
+    threads: auto
 
 ##
 ## Performance tuning and profiling
