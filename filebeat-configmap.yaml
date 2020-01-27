@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: nsm
+  labels:
+    app: filebeat
+data:
+  filebeat.yml: |-
+    filebeat.inputs:
+    - type: log
+      paths: 
+        - /var/log/suricata/eve.json
+      processors:
+        - add_fields:
+          fields:
+            sensor: ${SENSOR_NAME}
+      fields_under_root: true
+
+    output.logstash:
+      hosts: ['${LOGSTASH_HOST:logstash}:${LOGSTASH_PORT:5044}']
+

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: suricata
-        image: localhost:32000/suricata:0.1
+        image: 192.168.136.134:32000/suricata:0.1
         securityContext:
           capabilities:
             add:
@@ -25,6 +25,29 @@ spec:
         volumeMounts:
         - name: suricata-logs
           mountPath: /var/log/suricata/  
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:7.5.2
+        args: [
+          "-c", "/etc/filebeat.yaml",
+          "-e",
+        ]
+        env:
+        - name: LOGSTASH_HOST
+          value: logstash
+        - name: LOGSTASH_PORT
+          value: "5044"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        volumeMounts:
+        - name: filebeat-config
+          mountPath: /etc/filebeat.yaml
+          readOnly: true
+          subPath: filebeat.yaml
+        - name: suricata-logs
+          mountPath: /var/log/suricata
       nodeSelector:
         type: net-sensor
       hostNetwork: true
@@ -32,3 +55,6 @@ spec:
       volumes:
       - name: suricata-logs
         emptyDir: {}
+      - name: filebeat-config
+        configMap:
+          name: filebeat-config
