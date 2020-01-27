@@ -13,7 +13,8 @@ data:
       paths: 
         - /var/log/suricata/eve.json
       processors:
-        - add_fields:
+      - add_fields:
+          target: ''
           fields:
             sensor: ${SENSOR_NAME}
       fields_under_root: true
